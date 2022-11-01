@@ -70,9 +70,10 @@ dev.off()
 
 #### Community composition by variables
 #### MANTEL
-otu_taxa <- read.csv("Bact_otu_B.csv", comment.char="", header=T, row.names=1, stringsAsFactors=T, check.names=FALSE)
-otu_only <- otu_taxa[,1:308]##select for only the count data
-table<- otu_only[,order(colnames(otu_only))]
+library(vegan)
+asv_taxa <- read.csv("Bact_asv_B.csv", comment.char="", header=T, row.names=1, stringsAsFactors=T, check.names=FALSE)
+asv_only <- asv_taxa[,1:308]##select for only the count data
+table<- asv_only[,order(colnames(asv_only))]
 
 ##import map file
 mapping <-read.csv("META_Panama_B.csv", comment.char="", header=T, row.names=1, stringsAsFactors=T, check.names=FALSE)
@@ -81,9 +82,9 @@ map <- mapping[order(rownames(mapping)),]
 ## MAKE SURE ROW NAMES AND COLUMN NAMES MATCH
 rownames(map) == colnames(table)
 
-otu <-table
+asv <-table
 #### Make distances --ASV Table
-bray = vegdist(t(otu), method = "bray")
+bray = vegdist(t(asv), method = "bray")
 #### Make Distances --Variables
 pH = dist(map$pH, method = "euclidean")
 Al = dist(map$Al, method = "euclidean")
@@ -99,6 +100,7 @@ vegan::mantel(bray, Zn, method="spearman", permutations=999)
 ## Use this to then plot the results
 #### PLOT MANTEL RESULTS
 library(ggplot2)
+
 mant <- read.csv("MantelNumbers.csv", comment.char="", header=T, stringsAsFactors=T, check.names=FALSE)
 mant$Variable <- factor(mant$Variable, levels = c("pH","Al", "Fe","Zn"))
 
